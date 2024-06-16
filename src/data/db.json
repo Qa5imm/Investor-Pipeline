@@ -1,0 +1,111 @@
+{
+  "deals": [
+    
+      {
+        "name": "Y combinator",
+        "pipelineStage": "Identified",
+        "investments": 700,
+        "3monCount": 11,
+        "dealNotes": ""
+      },
+      {
+        "name": "TechStars",
+        "pipelineStage": "Seeking Intro",
+        "investments": 450,
+        "3monCount": 5,
+        "dealNotes": ""
+      },
+      {
+        "name": "500 Startups",
+        "pipelineStage": "Call Scheduled",
+        "investments": 300,
+        "3monCount": 8,
+        "dealNotes": ""
+      },
+      {
+        "name": "AngelPad",
+        "pipelineStage": "Due Diligence",
+        "investments": 200,
+        "3monCount": 3,
+        "dealNotes": ""
+      },
+      {
+        "name": "Alchemist Accelerator",
+        "pipelineStage": "Verbal Agreement",
+        "investments": 150,
+        "3monCount": 6,
+        "dealNotes": ""
+      },
+      {
+        "name": "Plug and Play",
+        "pipelineStage": "Closed/Signed",
+        "investments": 600,
+        "3monCount": 7,
+        "dealNotes": ""
+      },
+      {
+        "name": "MassChallenge",
+        "pipelineStage": "Closed/Lost",
+        "investments": 100,
+        "3monCount": 2,
+        "dealNotes": ""
+      },
+      {
+        "name": "Dreamit Ventures",
+        "pipelineStage": "Disappeared",
+        "investments": 250,
+        "3monCount": 4,
+        "dealNotes": ""
+      },
+      {
+        "name": "StartX",
+        "pipelineStage": "Identified",
+        "investments": 500,
+        "3monCount": 9,
+        "dealNotes": ""
+      },
+      {
+        "name": "Capital Innovators",
+        "pipelineStage": "Seeking Intro",
+        "investments": 320,
+        "3monCount": 5,
+        "dealNotes": ""
+      },
+      {
+        "name": "NXTP Labs",
+        "pipelineStage": "Call Scheduled",
+        "investments": 400,
+        "3monCount": 10,
+        "dealNotes": ""
+      },
+      {
+        "name": "NFX Guild",
+        "pipelineStage": "Due Diligence",
+        "investments": 270,
+        "3monCount": 7,
+        "dealNotes": ""
+      },
+      {
+        "name": "HAX",
+        "pipelineStage": "Verbal Agreement",
+        "investments": 380,
+        "3monCount": 11,
+        "dealNotes": ""
+      },
+      {
+        "name": "Amplify LA",
+        "pipelineStage": "Closed/Signed",
+        "investments": 210,
+        "3monCount": 3,
+        "dealNotes": ""
+      },
+      {
+        "name": "Launchpad LA",
+        "pipelineStage": "Closed/Lost",
+        "investments": 190,
+        "3monCount": 6,
+        "dealNotes": ""
+      }
+    ]
+  
+}
