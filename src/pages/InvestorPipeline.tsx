@@ -3,9 +3,10 @@
 import { useState } from "react";
 import ListView from "../components/ListView";
 import { ToggleButton } from "../components/ToggleButton";
+import BoardView from "../components/BoardView";
 
 export default function InvestorPipeline() {
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
   const handleToggle = () => {
     setToggle(!toggle);
   };
@@ -18,7 +19,7 @@ export default function InvestorPipeline() {
           isToggled={toggle}
         />
       </div>
-      {toggle ? <p>Board View</p> : <ListView />}
+      {toggle ? <BoardView /> : <ListView />}
     </div>
   );
 }

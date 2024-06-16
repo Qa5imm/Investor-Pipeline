@@ -1,6 +1,12 @@
 // @ts-nocheck
 
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useDealsQuery from "../hooks/useDealsQuery";
 
 export const AppContext = createContext(null);
@@ -15,17 +21,20 @@ function StateProvider({ children }) {
     isFetchNextPageError,
   } = useDealsQuery();
 
-  const [deals, setDeals] = useState(data);
+  const formattedData = useMemo(
+    () => data?.pages.map((page) => page.data.map((deal) => deal)).flat(),
+    [data]
+  );
+  const [deals, setDeals] = useState(formattedData);
+  console.log("formattedDtata", formattedData);
 
   useEffect(() => {
-    setDeals(data);
-  }, [data]);
+    setDeals(formattedData);
+  }, [formattedData]);
 
   const updateDeals = (updatedDeals) => {
     setDeals(updatedDeals);
   };
-
-  
 
   const context = {
     deals,
@@ -37,7 +46,9 @@ function StateProvider({ children }) {
 
   if (isLoading) return <div className="m-auto my-24 w-fit">Loading...</div>;
   if (isError)
-    return <div className="m-auto w-fit text-red-500 my-24">An Error Occured!</div>;
+    return (
+      <div className="m-auto w-fit text-red-500 my-24">An Error Occured!</div>
+    );
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
 }

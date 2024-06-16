@@ -39,7 +39,7 @@ export default function ListView() {
     <div className={``}>
       <div className="overflow-y-auto h-72">
         <table className="w-full border-2">
-          <thead className="h-12 border-b-2 bg-blue-100">
+          <thead className="h-12 border-b-2 bg-blue-200">
             <tr>
               {headers.map((header, index) => (
                 <th
@@ -48,7 +48,7 @@ export default function ListView() {
                   onDragStart={() => handleDrag(index)}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={() => handleDrop(index)}
-                  className="text-center font-normal text-gray-500 p-2 cursor-move border-l-4"
+                  className="text-center font-normal  p-2 cursor-move border-l-4"
                 >
                   {headersMap[header]}
                   {header === "dealNotes" && (
@@ -59,8 +59,14 @@ export default function ListView() {
             </tr>
           </thead>
           <tbody>
-            {deals?.pages.map((page, index) => (
-              <Page page={page} headers={headers} key={index} pageNum={index} />
+            {deals?.map((row, index) => (
+              <TableRow
+                headers={headers}
+                // pageNum={pageNum}
+                rowNum={index}
+                row={row}
+                key={index}
+              />
             ))}
             <tr ref={ref}>
               <td
@@ -79,17 +85,17 @@ export default function ListView() {
   );
 }
 
-function Page({ page, headers, pageNum }) {
-  return page?.data.map((row, index) => (
-    <TableRow
-      headers={headers}
-      pageNum={pageNum}
-      rowNum={index}
-      row={row}
-      key={index}
-    />
-  ));
-}
+// function Page({ page, headers, pageNum }) {
+//   return page?.data.map((row, index) => (
+//     <TableRow
+//       headers={headers}
+//       pageNum={pageNum}
+//       rowNum={index}
+//       row={row}
+//       key={index}
+//     />
+//   ));
+// }
 
 function TableRow({ row, headers, rowNum, pageNum }) {
   const [rowState, setRowState] = useState(row);
@@ -150,6 +156,7 @@ function CellContent({
         row={row}
         pageNum={pageNum}
         rowNum={rowNum}
+        currDeal={row}
         buttonText={"save"}
         hasChanged={hasChanged}
         onHasChanged={onHasChanged}
@@ -171,23 +178,12 @@ function Button({
   const { updateDeals } = useContext(AppContext);
 
   const handleUpdate = (deals) => {
-    return {
-      ...deals,
-      pages: deals.pages.map((page, pIndex) => {
-        if (pIndex === pageNum) {
-          return {
-            ...page,
-            data: page.data.map((currentRow, rIndex) => {
-              if (rIndex === rowNum) {
-                return row; // updated row data
-              }
-              return currentRow;
-            }),
-          };
-        }
-        return page;
-      }),
-    };
+    return deals.map((deal) => {
+      if (deal["name"] === row["name"]) {
+        return row;
+      }
+      return deal;
+    });
   };
 
   const handleClick = () => {
