@@ -14,8 +14,13 @@ export default function ListView() {
   const { ref, inView } = useInView();
   const [headers, setHeaders] = useState(headerList);
 
-  const { deals, fetchNextPage, isFetchingNextPage, isFetchNextPageError } =
-    useContext(AppContext);
+  const {
+    deals,
+    fetchNextPage,
+    updateDeals,
+    isFetchingNextPage,
+    isFetchNextPageError,
+  } = useContext(AppContext);
 
   useEffect(() => {
     if (inView) {
@@ -36,6 +41,29 @@ export default function ListView() {
   console.log("deals", deals);
 
   return (
+    <TableView
+      viewRef={ref}
+      deals={deals}
+      headers={headers}
+      isFetchNextPageError={isFetchNextPageError}
+      isFetchingNextPage={isFetchingNextPage}
+      onDrop={handleDrop}
+      onDrag={handleDrag}
+      onUpdateDeals={updateDeals}
+    />
+  );
+}
+export const TableView = ({
+  deals,
+  headers,
+  viewRef,
+  isFetchingNextPage,
+  isFetchNextPageError,
+  onDrag,
+  onDrop,
+  onUpdateDeals,
+}) => {
+  return (
     <div className={``}>
       <div className="overflow-y-auto h-72">
         <table className="w-full border-2">
@@ -45,9 +73,9 @@ export default function ListView() {
                 <th
                   key={index}
                   draggable
-                  onDragStart={() => handleDrag(index)}
+                  onDragStart={() => onDrag(index)}
                   onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => handleDrop(index)}
+                  onDrop={() => onDrop(index)}
                   className="text-center font-normal  p-2 cursor-move border-l-4"
                 >
                   {headersMap[header]}
@@ -61,14 +89,13 @@ export default function ListView() {
           <tbody>
             {deals?.map((row, index) => (
               <TableRow
+                onUpdateDeals={onUpdateDeals}
                 headers={headers}
-                // pageNum={pageNum}
-                rowNum={index}
                 row={row}
                 key={index}
               />
             ))}
-            <tr ref={ref}>
+            <tr ref={viewRef}>
               <td
                 className="p-4 text-lg text-gray-500 font-semibold"
                 align="center"
@@ -83,36 +110,23 @@ export default function ListView() {
       </div>
     </div>
   );
-}
+};
 
-// function Page({ page, headers, pageNum }) {
-//   return page?.data.map((row, index) => (
-//     <TableRow
-//       headers={headers}
-//       pageNum={pageNum}
-//       rowNum={index}
-//       row={row}
-//       key={index}
-//     />
-//   ));
-// }
-
-function TableRow({ row, headers, rowNum, pageNum }) {
+function TableRow({ row, onUpdateDeals, headers }) {
   const [rowState, setRowState] = useState(row);
   const [hasChanged, setHasChanged] = useState(false);
   const columnWidth = `w-1/${headers.length}`;
   return (
-    <tr className="">
-      {headers.map((header) => (
-        <td className={`p-1 text-center ${columnWidth}`}>
+    <tr>
+      {headers.map((header, index) => (
+        <td key={index} className={`p-1 text-center ${columnWidth}`}>
           <CellContent
             header={header}
             row={rowState}
-            pageNum={pageNum}
-            rowNum={rowNum}
             hasChanged={hasChanged}
             onStateChange={setRowState}
             onHasChanged={setHasChanged}
+            onUpdateDeals={onUpdateDeals}
           />
         </td>
       ))}
@@ -123,11 +137,10 @@ function TableRow({ row, headers, rowNum, pageNum }) {
 function CellContent({
   header,
   row,
-  pageNum,
-  rowNum,
   hasChanged,
   onStateChange,
   onHasChanged,
+  onUpdateDeals,
 }) {
   if (header === "pipelineStage") {
     return (
@@ -154,12 +167,11 @@ function CellContent({
     return (
       <Button
         row={row}
-        pageNum={pageNum}
-        rowNum={rowNum}
         currDeal={row}
         buttonText={"save"}
         hasChanged={hasChanged}
         onHasChanged={onHasChanged}
+        onUpdateDeals={onUpdateDeals}
       />
     );
   }
@@ -167,16 +179,7 @@ function CellContent({
   return row[header];
 }
 
-function Button({
-  row,
-  pageNum,
-  rowNum,
-  buttonText,
-  hasChanged,
-  onHasChanged,
-}) {
-  const { updateDeals } = useContext(AppContext);
-
+function Button({ row, buttonText, hasChanged, onHasChanged, onUpdateDeals }) {
   const handleUpdate = (deals) => {
     return deals.map((deal) => {
       if (deal["name"] === row["name"]) {
@@ -187,7 +190,7 @@ function Button({
   };
 
   const handleClick = () => {
-    updateDeals((deals) => handleUpdate(deals));
+    onUpdateDeals((deals) => handleUpdate(deals));
     onHasChanged(false);
   };
   return (
@@ -204,7 +207,7 @@ function Button({
   );
 }
 
-function EditableInput({ value, onStateChange, onHasChanged }) {
+export const EditableInput = ({ value, onStateChange, onHasChanged }) => {
   const handleInput = (event) => {
     const newNotes = event.target.value;
     onStateChange((row) => ({ ...row, dealNotes: newNotes }));
@@ -215,9 +218,11 @@ function EditableInput({ value, onStateChange, onHasChanged }) {
       value={value}
       onChange={handleInput}
       className="cursor-text"
+      id="notes"
+      data-testid="notes"
     ></textarea>
   );
-}
+};
 
 function Dropdown({ selected, onStateChange, onHasChanged, options }) {
   const handleChange = (event) => {

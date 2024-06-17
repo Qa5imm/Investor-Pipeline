@@ -15,7 +15,7 @@ export default function useDealsQuery() {
     queryFn: fetchDeals,
     initialPageParam: 1,
     getNextPageParam: (_, pages) => {
-      if (pages.length < 5) {
+      if (pages.length < 3) {
         return pages.length + 1;
       }
       return undefined;

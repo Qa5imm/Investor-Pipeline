@@ -5,19 +5,23 @@ import { AppContext } from "../providers/StateProvider";
 import { pipelineStages } from "../data/staticState";
 
 function BoardView() {
-  const { deals } = useContext(AppContext);
+  const { deals, updateDeals } = useContext(AppContext);
 
   return (
     <div className="flex gap-x-2 px-6 overflow-scroll h-96">
       {pipelineStages.map((stage, index) => (
-        <Column title={stage} key={index} deals={deals || []} />
+        <BoradColumn
+          title={stage}
+          key={index}
+          deals={deals || []}
+          onUpdateDeals={updateDeals}
+        />
       ))}
     </div>
   );
 }
 
-function Column({ title, deals }) {
-  const { updateDeals } = useContext(AppContext);
+export const BoradColumn = ({ title, deals, onUpdateDeals }) => {
   const handleDragStart = (e, deal) => {
     e.dataTransfer.setData("deal", deal);
   };
@@ -62,7 +66,7 @@ function Column({ title, deals }) {
       );
       remainingDeals.splice(insertIndex, 0, updatedDeal);
     }
-    updateDeals(remainingDeals);
+    onUpdateDeals(remainingDeals);
   };
 
   const getIndicators = () => {
@@ -71,13 +75,10 @@ function Column({ title, deals }) {
 
   const getNearestIndicators = (e, indicators) => {
     const DISTANCE_OFFSET = 50;
-    console.log(indicators);
 
     return indicators.reduce(
       (closet, elem) => {
         const box = elem.getBoundingClientRect();
-        console.log("box", box, elem.dataset, "eleme", e.clientY);
-
         const offset = e.clientY - (box.top + DISTANCE_OFFSET);
         if (offset < 0 && offset > closet.offset) {
           return {
@@ -110,14 +111,14 @@ function Column({ title, deals }) {
         </p>
       </div>
       <div className="flex flex-col">
-        {fitlteredDeals.map((deal) => (
-          <Card deal={deal} onDragStart={handleDragStart} />
+        {fitlteredDeals.map((deal, index) => (
+          <Card deal={deal} onDragStart={handleDragStart} key={index} />
         ))}
       </div>
       <Indicators card={null} column={title} />
     </div>
   );
-}
+};
 
 function Card({ deal, onDragStart }) {
   return (
@@ -136,7 +137,6 @@ function Card({ deal, onDragStart }) {
   );
 }
 function Indicators({ card, column }) {
-  console.log("card", card);
   return (
     <div data-before={card || "-1"} data-column={column} className="h-4"></div>
   );
