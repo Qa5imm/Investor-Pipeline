@@ -38,10 +38,10 @@ export default function ListView() {
     updatedColumns.splice(dropInd, 0, updatedColumns.splice(startInd, 1)[0]);
     setHeaders(updatedColumns);
   };
-  console.log("deals", deals);
+  // console.log("deals", deals);
 
   return (
-    <TableView
+    <Table
       viewRef={ref}
       deals={deals}
       headers={headers}
@@ -53,7 +53,7 @@ export default function ListView() {
     />
   );
 }
-export const TableView = ({
+export const Table = ({
   deals,
   headers,
   viewRef,
@@ -112,7 +112,7 @@ export const TableView = ({
   );
 };
 
-function TableRow({ row, onUpdateDeals, headers }) {
+export const TableRow = ({ row, onUpdateDeals, headers }) => {
   const [rowState, setRowState] = useState(row);
   const [hasChanged, setHasChanged] = useState(false);
   const columnWidth = `w-1/${headers.length}`;
@@ -120,7 +120,7 @@ function TableRow({ row, onUpdateDeals, headers }) {
     <tr>
       {headers.map((header, index) => (
         <td key={index} className={`p-1 text-center ${columnWidth}`}>
-          <CellContent
+          <TableCellContent
             header={header}
             row={rowState}
             hasChanged={hasChanged}
@@ -132,9 +132,9 @@ function TableRow({ row, onUpdateDeals, headers }) {
       ))}
     </tr>
   );
-}
+};
 
-function CellContent({
+function TableCellContent({
   header,
   row,
   hasChanged,
@@ -201,6 +201,7 @@ function Button({ row, buttonText, hasChanged, onHasChanged, onUpdateDeals }) {
           ? "bg-blue-500 hover:bg-blue-700 "
           : "bg-gray-400 cursor-not-allowed"
       }`}
+      data-testid="save-button"
     >
       {buttonText}
     </button>
@@ -218,8 +219,8 @@ export const EditableInput = ({ value, onStateChange, onHasChanged }) => {
       value={value}
       onChange={handleInput}
       className="cursor-text"
-      id="notes"
-      data-testid="notes"
+      data-testid="deal-notes"
+      placeholder="enter deal notes here..."
     ></textarea>
   );
 };
@@ -235,6 +236,7 @@ function Dropdown({ selected, onStateChange, onHasChanged, options }) {
       className="bg-transparent outline-none border-none p-2 rounded"
       value={selected}
       onChange={handleChange}
+      data-testid="dropdown"
     >
       {options.map((option) => (
         <option key={option} value={option}>

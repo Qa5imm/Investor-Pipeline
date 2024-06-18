@@ -2,7 +2,6 @@
 
 import {
   createContext,
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -26,7 +25,6 @@ function StateProvider({ children }) {
     [data]
   );
   const [deals, setDeals] = useState(formattedData);
-  console.log("formattedDtata", formattedData);
 
   useEffect(() => {
     setDeals(formattedData);

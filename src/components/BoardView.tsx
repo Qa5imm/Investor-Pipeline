@@ -10,7 +10,7 @@ function BoardView() {
   return (
     <div className="flex gap-x-2 px-6 overflow-scroll h-96">
       {pipelineStages.map((stage, index) => (
-        <BoradColumn
+        <Column
           title={stage}
           key={index}
           deals={deals || []}
@@ -21,7 +21,7 @@ function BoardView() {
   );
 }
 
-export const BoradColumn = ({ title, deals, onUpdateDeals }) => {
+export const Column = ({ title, deals, onUpdateDeals }) => {
   const handleDragStart = (e, deal) => {
     e.dataTransfer.setData("deal", deal);
   };
@@ -103,6 +103,7 @@ export const BoradColumn = ({ title, deals, onUpdateDeals }) => {
       className="shrink-0 w-52"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
+      data-testid={title}
     >
       <div className="gap-x-2 mb-2">
         <p className="bg-blue-200 w-full flex justify-between rounded px-2 py-1">

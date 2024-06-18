@@ -1,8 +1,6 @@
-
-
 //@ts-nocheck
 
-export function ToggleButton({ toggleText, isToggled, onToggle }) {
+export function ToggleButton({ toggleText, isToggled, onToggle, testId }) {
   return (
     <>
       <label className="themeSwitcherTwo relative inline-flex cursor-pointer select-none items-center">
@@ -11,6 +9,7 @@ export function ToggleButton({ toggleText, isToggled, onToggle }) {
           checked={isToggled}
           onChange={onToggle}
           className="sr-only"
+          data-id={testId}
         />
         <span
           className={`slider mx-4 flex h-8 w-[60px] items-center rounded-full p-1 duration-200 ${
