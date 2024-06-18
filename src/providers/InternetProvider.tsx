@@ -6,7 +6,7 @@ export default function InternetProvider({ children }) {
   return (
     <>
       {!isOnline && (
-        <p className="w-full bg-yellow-200 text-center p-1.5">
+        <p className="w-full bg-yellow-200 text-center p-1.5 ">
           You have lost internet connetion, please try again.
         </p>
       )}

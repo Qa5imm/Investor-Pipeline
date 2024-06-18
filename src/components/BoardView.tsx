@@ -8,7 +8,7 @@ function BoardView() {
   const { deals, updateDeals } = useContext(AppContext);
 
   return (
-    <div className="flex gap-x-2 px-6 overflow-scroll h-96">
+    <div className="flex gap-x-2 overflow-scroll h-screen">
       {pipelineStages.map((stage, index) => (
         <Column
           title={stage}
@@ -121,7 +121,7 @@ export const Column = ({ title, deals, onUpdateDeals }) => {
   );
 };
 
-function Card({ deal, onDragStart }) {
+const Card = ({ deal, onDragStart }) => {
   return (
     <>
       <Indicators card={deal.name} column={deal.pipelineStage} />
@@ -136,11 +136,11 @@ function Card({ deal, onDragStart }) {
       </div>
     </>
   );
-}
-function Indicators({ card, column }) {
+};
+const Indicators = ({ card, column }) => {
   return (
     <div data-before={card || "-1"} data-column={column} className="h-4"></div>
   );
-}
+};
 
 export default BoardView;

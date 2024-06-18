@@ -34,6 +34,6 @@ export default function useDealsQuery() {
 
 function fetchDeals({ pageParam }) {
   return fetch(
-    `http://localhost:7000/deals/?_per_page=5&_page=${pageParam}`
+    `http://localhost:7000/deals/?_per_page=6&_page=${pageParam}`
   ).then((data) => data.json());
 }

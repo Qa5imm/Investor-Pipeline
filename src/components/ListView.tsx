@@ -38,7 +38,6 @@ export default function ListView() {
     updatedColumns.splice(dropInd, 0, updatedColumns.splice(startInd, 1)[0]);
     setHeaders(updatedColumns);
   };
-  // console.log("deals", deals);
 
   return (
     <Table
@@ -65,7 +64,7 @@ export const Table = ({
 }) => {
   return (
     <div className={``}>
-      <div className="overflow-y-auto h-72">
+      <div className="overflow-y-auto h-96">
         <table className="w-full border-2">
           <thead className="h-12 border-b-2 bg-blue-200">
             <tr>
@@ -97,11 +96,13 @@ export const Table = ({
             ))}
             <tr ref={viewRef}>
               <td
-                className="p-4 text-lg text-gray-500 font-semibold"
+                className="p-3 text-lg text-gray-500 font-semibold"
                 align="center"
                 colSpan={headers.length}
               >
-                {isFetchingNextPage ? "Loading..." : "No more results"}
+                {isFetchingNextPage
+                  ? "Loading..."
+                  : !isFetchNextPageError && "No more results"}
                 {isFetchNextPageError && "Error loading more results"}
               </td>
             </tr>
@@ -119,7 +120,7 @@ export const TableRow = ({ row, onUpdateDeals, headers }) => {
   return (
     <tr>
       {headers.map((header, index) => (
-        <td key={index} className={`p-1 text-center ${columnWidth}`}>
+        <td key={index} className={`text-center ${columnWidth}`}>
           <TableCellContent
             header={header}
             row={rowState}
@@ -196,6 +197,7 @@ function Button({ row, buttonText, hasChanged, onHasChanged, onUpdateDeals }) {
   return (
     <button
       onClick={handleClick}
+      disabled={!hasChanged}
       className={`px-4 py-2 font-semibold text-white cursor-pointer rounded ${
         hasChanged
           ? "bg-blue-500 hover:bg-blue-700 "
@@ -218,14 +220,13 @@ export const EditableInput = ({ value, onStateChange, onHasChanged }) => {
     <textarea
       value={value}
       onChange={handleInput}
-      className="cursor-text"
+      className="cursor-text bg-transparent outline-gray-400 p-1"
       data-testid="deal-notes"
-      placeholder="enter deal notes here..."
     ></textarea>
   );
 };
 
-function Dropdown({ selected, onStateChange, onHasChanged, options }) {
+const Dropdown = ({ selected, onStateChange, onHasChanged, options }) => {
   const handleChange = (event) => {
     const newValue = event.target.value;
     onStateChange((row) => ({ ...row, pipelineStage: newValue }));
@@ -245,4 +246,4 @@ function Dropdown({ selected, onStateChange, onHasChanged, options }) {
       ))}
     </select>
   );
-}
+};

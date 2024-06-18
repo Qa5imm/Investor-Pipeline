@@ -1,12 +1,8 @@
 // @ts-nocheck
 
-import {
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import useDealsQuery from "../hooks/useDealsQuery";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export const AppContext = createContext(null);
 
@@ -42,10 +38,19 @@ function StateProvider({ children }) {
     isFetchNextPageError,
   };
 
-  if (isLoading) return <div className="m-auto my-24 w-fit">Loading...</div>;
-  if (isError)
+  if (isLoading)
     return (
-      <div className="m-auto w-fit text-red-500 my-24">An Error Occured!</div>
+      <div className="flex justify-center h-screen items-center">
+        <LoadingSpinner />
+      </div>
+    );
+
+  // Display fetchNextPageError if the next page fetch fails, avoiding the general error message
+  if (isError && !isFetchNextPageError)
+    return (
+      <div className="flex justify-center h-screen items-center text-red-500">
+        An Error Occured...
+      </div>
     );
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
