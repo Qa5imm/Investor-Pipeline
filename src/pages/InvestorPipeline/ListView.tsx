@@ -125,11 +125,10 @@ export const Table = ({
 export const TableRow = ({ row, onUpdateDeals, headers }) => {
   const [rowState, setRowState] = useState(row);
   const [hasChanged, setHasChanged] = useState(false);
-  const columnWidth = `w-1/${headers.length}`;
   return (
     <tr className="">
       {headers.map((header, index) => (
-        <td key={index} className={`text-center `}>
+        <td key={index} className="text-center">
           <TableCellContent
             header={header}
             row={rowState}

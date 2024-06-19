@@ -126,6 +126,7 @@ const Card = ({ deal, onDragStart }) => {
     <>
       <Indicators card={deal.name} column={deal.pipelineStage} />
       <div
+        data-testid={deal.name}
         draggable="true"
         onDragStart={(e) => {
           onDragStart(e, deal.name);

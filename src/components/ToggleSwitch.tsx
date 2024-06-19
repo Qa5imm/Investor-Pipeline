@@ -2,7 +2,7 @@
 
 const ToggleSwitch = ({ isToggled, onToggle }) => {
   return (
-    <>
+    <div test-id="toggle-switch">
       <label className="themeSwitcherTwo shadow-card relative inline-flex cursor-pointer select-none items-center justify-center rounded-md bg-white p-1">
         <input
           type="checkbox"
@@ -25,7 +25,7 @@ const ToggleSwitch = ({ isToggled, onToggle }) => {
           Board View
         </span>
       </label>
-    </>
+    </div>
   );
 };
 

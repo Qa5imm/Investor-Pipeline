@@ -1,7 +1,6 @@
 // @ts-nocheck
 
-// intergration testing
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import InvestorPipeline from "./InvestorPipeline";
 import StateProvider from "../../providers/StateProvider";
 import useDealsQuery from "../../hooks/useDealsQuery";
@@ -14,11 +13,9 @@ jest.mock("react-intersection-observer", () => {
   };
 });
 jest.mock("@tanstack/react-query", () => {});
-jest.mock("../hooks/useDealsQuery");
+jest.mock("../../hooks/useDealsQuery");
 
-const user = userEvent.setup();
-const mockFunction = jest.fn();
-const mockDealsData = [
+const mockDeals = [
   {
     name: "TechStars",
     pipelineStage: "Identified",
@@ -27,46 +24,130 @@ const mockDealsData = [
     dealNotes: "",
   },
 ];
-const formattedMockDealsData = {
+const formattedMockDeals = {
   pages: [
     {
-      data: mockDealsData,
+      data: mockDeals,
     },
   ],
 };
-test("should syncrhonize state changes between two viwes", async () => {
-  // Mock implementation of useDealsQuery
-  useDealsQuery.mockReturnValue({
-    data: formattedMockDealsData,
-    isLoading: false,
-    isError: false,
-    fetchNextPage: mockFunction,
-    isFetchingNextPage: false,
-    isFetchNextPageError: false,
+
+describe("Investor Pipeline", () => {
+  // intergration testing
+  it("should syncrhonize state changes from list to board view", async () => {
+    const user = userEvent.setup();
+    const mockFunction = jest.fn();
+
+    useDealsQuery.mockReturnValue({
+      data: formattedMockDeals,
+      isLoading: false,
+      isError: false,
+      fetchNextPage: mockFunction,
+      isFetchingNextPage: false,
+      isFetchNextPageError: false,
+    });
+
+    useInView.mockReturnValue({
+      ref: { current: {} },
+      InView: {},
+    });
+    render(
+      <StateProvider>
+        <InvestorPipeline />
+      </StateProvider>
+    );
+    const stageDropdown = screen.getByTestId("dropdown");
+    const saveButton = screen.getByTestId("save-button");
+    const toggleButton = screen.getByText("List View");
+
+    await user.selectOptions(stageDropdown, "Disappeared");
+    await user.click(saveButton);
+    expect(stageDropdown).toHaveValue("Disappeared");
+
+    // this will change the view from list to board
+    await user.click(toggleButton);
+
+    // testing whether updated changes reflect in the board view
+    const stageColumn = screen.getByTestId("Disappeared");
+    expect(stageColumn).toHaveTextContent("TechStars");
   });
 
-  // Mock implementation of useDealsQuery
-  useInView.mockReturnValue({
-    ref: { current: {} },
-    InView: {},
+  it("should syncrhonize state changes from board to list view", async () => {
+    const user = userEvent.setup();
+    const mockFunction = jest.fn();
+
+    useDealsQuery.mockReturnValue({
+      data: formattedMockDeals,
+      isLoading: false,
+      isError: false,
+      fetchNextPage: mockFunction,
+      isFetchingNextPage: false,
+      isFetchNextPageError: false,
+    });
+
+    useInView.mockReturnValue({
+      ref: { current: {} },
+      InView: {},
+    });
+
+    const dataTransfer = {
+      setData: jest.fn(),
+      getData: jest.fn(() => "TechStars"),
+    };
+    render(
+      <StateProvider>
+        <InvestorPipeline />
+      </StateProvider>
+    );
+
+    const toggleButton = screen.getByText("List View");
+
+    // this will change the view from list to board view (default is list View)
+    await user.click(toggleButton);
+
+    const card = screen.getByTestId("TechStars");
+    const dropColumn = screen.getByTestId("Disappeared");
+
+    fireEvent.dragStart(card, { dataTransfer });
+    fireEvent.dragOver(dropColumn);
+    fireEvent.drop(dropColumn, { dataTransfer });
+    fireEvent.dragEnd(card);
+    expect(dropColumn).toHaveTextContent("TechStars");
+
+    // this will change the view from board to list
+    await user.click(toggleButton);
+
+    // testing whether updated changes reflect in the list view
+    const stageDropdown = screen.getByTestId("dropdown");
+    expect(stageDropdown).toHaveValue("Disappeared");
   });
-  render(
-    <StateProvider>
-      <InvestorPipeline />
-    </StateProvider>
-  );
-  const stageDropdown = screen.getByTestId("dropdown");
-  const saveButton = screen.getByTestId("save-button");
-  const toggleButton = screen.getByLabelText("List View");
 
-  await user.selectOptions(stageDropdown, "Disappeared");
-  await user.click(saveButton);
-  expect(stageDropdown).toHaveValue("Disappeared");
+  // unit testing
+  it("should change the view on toggle", async () => {
+    const user = userEvent.setup();
+    const mockFunction = jest.fn();
 
-  // this will change the view from list to board
-  await user.click(toggleButton);
+    useDealsQuery.mockReturnValue({
+      data: formattedMockDeals,
+      isLoading: false,
+      isError: false,
+      fetchNextPage: mockFunction,
+      isFetchingNextPage: false,
+      isFetchNextPageError: false,
+    });
 
-  // testing whether updated changes reflect in the board view
-  const stageColumn = screen.getByTestId("Disappeared");
-  expect(stageColumn).toHaveTextContent("TechStars");
+    useInView.mockReturnValue({
+      ref: { current: {} },
+      InView: {},
+    });
+    render(
+      <StateProvider>
+        <InvestorPipeline />
+      </StateProvider>
+    );
+    const toggleButton = screen.getByText("List View");
+    expect(screen.getByText("List View")).toBeInTheDocument();
+    await user.click(toggleButton);
+    expect(screen.getByText("Board View")).toBeInTheDocument();
+  });
 });
