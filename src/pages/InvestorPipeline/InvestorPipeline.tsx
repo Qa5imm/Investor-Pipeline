@@ -1,9 +1,9 @@
 //@ts-nocheck
 
 import { useState } from "react";
-import ListView from "../components/ListView";
-import BoardView from "../components/BoardView";
-import { Navbar } from "../components/Navbar";
+import ListView from "./ListView";
+import BoardView from "./BoardView";
+import { Navbar } from "../../components/Navbar";
 
 export default function InvestorPipeline() {
   const [toggle, setToggle] = useState(false);

@@ -2,13 +2,14 @@
 
 import { useInView } from "react-intersection-observer";
 import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../providers/StateProvider";
+import { AppContext } from "../../providers/StateProvider";
 import {
   headersMap,
   headerList,
   pipelineStages,
   editable,
-} from "../data/staticState";
+} from "../../data/staticState";
+import Resizable from "../../components/Resizable";
 
 export default function ListView() {
   const { ref, inView } = useInView();
@@ -64,24 +65,32 @@ export const Table = ({
 }) => {
   return (
     <div className={``}>
-      <div className="overflow-y-auto h-96">
+      <div className="overflow-auto h-96">
         <table className="w-full border-2">
-          <thead className="h-12 border-b-2 bg-blue-200">
-            <tr>
+          <thead className="h-12 border-b-2 bg-blue-200 ">
+            <tr className="">
               {headers.map((header, index) => (
-                <th
-                  key={index}
-                  draggable
-                  onDragStart={() => onDrag(index)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => onDrop(index)}
-                  className="text-center font-normal  p-2 cursor-move border-l-4"
-                >
-                  {headersMap[header]}
-                  {header === "dealNotes" && (
-                    <i className="fa-solid fa-pen-to-square mx-2" />
+                <Resizable key={header}>
+                  {({ ref }) => (
+                    <th
+                      key={header}
+                      draggable
+                      onDragStart={() => onDrag(index)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => onDrop(index)}
+                      className="text-center font-normal relative p-2"
+                    >
+                      {headersMap[header]}
+                      {editable.includes(header) && (
+                        <i className="fa-solid fa-pen-to-square ml-2" />
+                      )}
+                      <div
+                        className="cursor-col-resize absolute right-0 top-0	h-full w-1 bg-gray-500"
+                        ref={ref}
+                      />
+                    </th>
                   )}
-                </th>
+                </Resizable>
               ))}
             </tr>
           </thead>
@@ -118,9 +127,9 @@ export const TableRow = ({ row, onUpdateDeals, headers }) => {
   const [hasChanged, setHasChanged] = useState(false);
   const columnWidth = `w-1/${headers.length}`;
   return (
-    <tr>
+    <tr className="">
       {headers.map((header, index) => (
-        <td key={index} className={`text-center ${columnWidth}`}>
+        <td key={index} className={`text-center `}>
           <TableCellContent
             header={header}
             row={rowState}
@@ -200,7 +209,7 @@ function Button({ row, buttonText, hasChanged, onHasChanged, onUpdateDeals }) {
       disabled={!hasChanged}
       className={`px-4 py-2 font-semibold text-white cursor-pointer rounded ${
         hasChanged
-          ? "bg-blue-500 hover:bg-blue-700 "
+          ? "bg-blue-500 hover:bg-blue-700"
           : "bg-gray-400 cursor-not-allowed"
       }`}
       data-testid="save-button"
@@ -220,7 +229,8 @@ export const EditableInput = ({ value, onStateChange, onHasChanged }) => {
     <textarea
       value={value}
       onChange={handleInput}
-      className="cursor-text bg-transparent outline-gray-400 p-1"
+      cols="10"
+      className="cursor-text bg-transparent outline-gray-400 p-1 w-full"
       data-testid="deal-notes"
     ></textarea>
   );
@@ -234,7 +244,7 @@ const Dropdown = ({ selected, onStateChange, onHasChanged, options }) => {
   };
   return (
     <select
-      className="bg-transparent outline-none border-none p-2 rounded"
+      className="bg-transparent outline-none border-none p-2 rounded w-full"
       value={selected}
       onChange={handleChange}
       data-testid="dropdown"

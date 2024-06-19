@@ -3,8 +3,8 @@
 // intergration testing
 import { render, screen } from "@testing-library/react";
 import InvestorPipeline from "./InvestorPipeline";
-import StateProvider from "../providers/StateProvider";
-import useDealsQuery from "../hooks/useDealsQuery";
+import StateProvider from "../../providers/StateProvider";
+import useDealsQuery from "../../hooks/useDealsQuery";
 import { useInView } from "react-intersection-observer";
 import userEvent from "@testing-library/user-event";
 

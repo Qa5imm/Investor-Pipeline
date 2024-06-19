@@ -13,7 +13,7 @@ export const editable = ["dealNotes"];
 export const headersMap = {
   name: "Name",
   pipelineStage: "Pipeline Stage",
-  investments: "Investments",
+  investments: "Total Investments",
   "3monCount": "3 Mon Deal Count",
   dealNotes: "Deal Notes",
   actions: "Actions",

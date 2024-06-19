@@ -1,13 +1,12 @@
 // @ts-nocheck
 
 import { render, screen } from "@testing-library/react";
-import { headerList } from "../data/staticState";
+import { headerList } from "../../data/staticState";
 import { Table, TableRow } from "./ListView";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("react-intersection-observer", () => {});
 jest.mock("@tanstack/react-query", () => {});
-
 
 const user = userEvent.setup();
 const mockFunction = jest.fn();
@@ -38,7 +37,6 @@ const deals = [
 ];
 
 describe("ListView", () => {
-
   it("should display fetched deals", async () => {
     render(
       <Table

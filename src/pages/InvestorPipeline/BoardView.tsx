@@ -1,8 +1,8 @@
 //@ts-nocheck
 
 import { useContext } from "react";
-import { AppContext } from "../providers/StateProvider";
-import { pipelineStages } from "../data/staticState";
+import { AppContext } from "../../providers/StateProvider";
+import { pipelineStages } from "../../data/staticState";
 
 function BoardView() {
   const { deals, updateDeals } = useContext(AppContext);
